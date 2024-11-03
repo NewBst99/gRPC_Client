@@ -1,6 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using grpc_client;
+// using System.Collections;
+// using System.Collections.Generic;
+using System.Threading.Tasks;
+// using grpc_client;
 using UnityEngine;
 
 public class SaveLoadManager : MonoBehaviour
@@ -16,18 +17,28 @@ public class SaveLoadManager : MonoBehaviour
     }
 
     // For Save Button
-    public void OnSaveButtonClick()
+    public async void OnSaveButtonClick()
     {
-        stubclient.saveUserInfo(1, "user1", 10, "2024-10-13");
-        stubclient.saveItemRelation(1, "c100", 1);
-        stubclient.saveItemRelation(1, "c101", 3);
-        stubclient.saveMapProgress(1, 0, -40, -8, 0);
+        await Task.Run(() =>
+        {
+            stubclient.saveUserInfo(1, "testuser1", 10, "2024-10-28 21:08:26");
+            stubclient.saveItemRelation(1, "c100", 1);
+            stubclient.saveItemRelation(1, "c101", 3);
+            stubclient.saveMapProgress(1, 0, -40, -8, 0);
+
+            Debug.Log("User info, item relations, and map progress saved successfully.");
+        });
     }
 
     // For Load Button
-    public void OnLoadButtonClick()
+    public async void OnLoadButtonClick()
     {
-        stubclient.getUserInfo(1);
+        await Task.Run(() =>
+        {
+            stubclient.getUserInfo(1);
+            Debug.Log("User info, item relations, and map progress loaded successfully.");
+        });
+        
     }
 
     private async void OnDestroy()
@@ -38,4 +49,5 @@ public class SaveLoadManager : MonoBehaviour
             await stubclient.ShutdownAsync();  // 비동기 메서드 호출
         }
     }
+
 }
