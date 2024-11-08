@@ -22,49 +22,70 @@ public class StubClient
         var response = client.getUserInfo(request);
 
         Console.WriteLine(response.Checkmessage);
-        Console.WriteLine("User ID : " + response.Userid);
-        Console.WriteLine("Nickname : " + response.Nkname);
-        Console.WriteLine("Experience : " + response.Exp);
-        Console.WriteLine("Save Time : " + response.Savetime);
     }
 
-    public void saveUserInfo(int userid, string nkname, int exp, string savetime)
+    public void saveUserInfo(int userid, string nkname, int curexp, int maxexp, int userlevel, 
+                            int curhp, int maxhp, int curmp, int maxmp, int attpower, int statpoint, int skillpoint, string savetime)
     {
         var request = new UserInfoRequest
         {
             Userid = userid,
             Nkname = nkname,
-            Exp = exp,
-            Savetime = savetime
+            Curexp = curexp,
+            Maxexp = maxexp,
+            Userlevel = userlevel,
+            Curhp = curhp,
+            Maxhp = maxhp,
+            Curmp = curmp,
+            Maxmp = maxmp,
+            Attpower = attpower,
+            Statpoint = statpoint,
+            Skillpoint = skillpoint,
         };
-
+        
         var response = client.saveUserInfo(request);
         Console.WriteLine(response.Checkmessage);
     }
 
-    public void getMapProgress(int userid)
+    public void getUserLocation(int userid)
     {
-        var request = new MapProgressRequest { Userid = userid };
-        var response = client.getMapProgress(request);
+        var request = new UserLocationRequest { Userid = userid };
+        var response = client.getUserLocation(request);
 
         Console.WriteLine(response.Checkmessage);
-        Console.WriteLine("User ID : " + response.Userid);
-        Console.WriteLine("User Location : " + response.Xloc + ", " + response.Yloc + ", " + response.Zloc);
-        Console.WriteLine("Map Progress : " + response.Mapprogress);
     }
 
-    public void saveMapProgress(int userid, int mapprogress, double xloc, double yloc, double zloc)
+    public void saveUserLocation(int userid, float xloc, float yloc, float zloc)
     {
-        var request = new MapProgressRequest
+        var request = new UserLocationRequest
         {
             Userid = userid,
-            Mapprogress = mapprogress,
             Xloc = xloc,
             Yloc = yloc,
             Zloc = zloc
         };
 
-        var response = client.saveMapProgress(request);
+        var response = client.saveUserLocation(request);
+    }
+
+    public void getSkillRelation(int userid)
+    {
+        var request = new SkillRelationRequest { Userid = userid };
+        var response = client.getSkillRelation(request);
+
+        Console.WriteLine(response.Checkmessage);
+    }
+
+    public void saveSkillRelation(int userid, int skillid, int skilllevel)
+    {
+        var request = new SkillRelationRequest
+        {
+            Userid = userid,
+            Skillid = skillid,
+            Skilllevel = skilllevel
+        };
+
+        var response = client.saveSkillRelation(request);
     }
 
     public void getItemRelation(int userid)
@@ -73,10 +94,6 @@ public class StubClient
         var response = client.getItemRelation(request);
 
         Console.WriteLine(response.Checkmessage);
-        Console.WriteLine("User ID : " + response.Userid);
-        Console.WriteLine("Item ID : " + response.Itemid);
-        Console.WriteLine("Item Name : " + response.Itemname);
-        Console.WriteLine("Quantity : " + response.Quantity);
     }
 
     public void saveItemRelation(int userid, string itemid, int quantity)
