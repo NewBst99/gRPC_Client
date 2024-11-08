@@ -16,15 +16,13 @@ public class StubClient
         client = new GameService.GameServiceClient(channel);
     }
 
-    public void getUserInfo(int userid)
+    public async Task getUserInfo(int userid)
     {
         var request = new UserInfoRequest { Userid = userid };
-        var response = client.getUserInfo(request);
-
-        Console.WriteLine(response.Checkmessage);
+        var response = client.getUserInfoAsync(request);
     }
 
-    public void saveUserInfo(int userid, string nkname, int curexp, int maxexp, int userlevel, 
+    public async Task saveUserInfo(int userid, string nkname, int curexp, int maxexp, int userlevel, 
                             int curhp, int maxhp, int curmp, int maxmp, int attpower, int statpoint, int skillpoint, string savetime)
     {
         var request = new UserInfoRequest
@@ -42,20 +40,17 @@ public class StubClient
             Statpoint = statpoint,
             Skillpoint = skillpoint,
         };
-        
-        var response = client.saveUserInfo(request);
-        Console.WriteLine(response.Checkmessage);
+
+        var response = await client.saveUserInfoAsync(request);
     }
 
-    public void getUserLocation(int userid)
+    public async Task getUserLocation(int userid)
     {
         var request = new UserLocationRequest { Userid = userid };
-        var response = client.getUserLocation(request);
-
-        Console.WriteLine(response.Checkmessage);
+        var response = client.getUserLocationAsync(request);
     }
 
-    public void saveUserLocation(int userid, float xloc, float yloc, float zloc)
+    public async Task saveUserLocation(int userid, float xloc, float yloc, float zloc)
     {
         var request = new UserLocationRequest
         {
@@ -65,18 +60,16 @@ public class StubClient
             Zloc = zloc
         };
 
-        var response = client.saveUserLocation(request);
+        var response = await client.saveUserLocationAsync(request);
     }
 
-    public void getSkillRelation(int userid)
+    public async Task getSkillRelation(int userid)
     {
         var request = new SkillRelationRequest { Userid = userid };
-        var response = client.getSkillRelation(request);
-
-        Console.WriteLine(response.Checkmessage);
+        var response = client.getSkillRelationAsync(request);
     }
 
-    public void saveSkillRelation(int userid, int skillid, int skilllevel)
+    public async Task saveSkillRelation(int userid, int skillid, int skilllevel)
     {
         var request = new SkillRelationRequest
         {
@@ -85,18 +78,16 @@ public class StubClient
             Skilllevel = skilllevel
         };
 
-        var response = client.saveSkillRelation(request);
+        var response = await client.saveSkillRelationAsync(request);
     }
 
-    public void getItemRelation(int userid)
+    public async Task getItemRelation(int userid)
     {
         var request = new ItemRelationRequest { Userid = userid };
-        var response = client.getItemRelation(request);
-
-        Console.WriteLine(response.Checkmessage);
+        var response = client.getItemRelationAsync(request);
     }
 
-    public void saveItemRelation(int userid, string itemid, int quantity)
+    public async Task saveItemRelation(int userid, string itemid, int quantity)
     {
         var request = new ItemRelationRequest
         {
@@ -105,7 +96,7 @@ public class StubClient
             Quantity = quantity
         };
 
-        var response = client.saveItemRelation(request);
+        var response = await client.saveItemRelationAsync(request);
     }
 
     public async Task ShutdownAsync()
