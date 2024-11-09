@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 
 using Grpc.Core;
-using myungbae;  // gRPC 생성된 파일들 포함
+using myungbae;
 
 public class StubClient
 {
@@ -11,8 +11,7 @@ public class StubClient
 
     public StubClient(string host, int port)
     {
-        // Grpc.Core의 Channel을 사용하여 GrpcChannel을 대체
-        channel = new Channel(host, port, ChannelCredentials.Insecure); // HTTP/2 보안을 비활성화 (개발 환경에서만 사용 권장)
+        channel = new Channel(host, port, ChannelCredentials.Insecure);
         client = new GameService.GameServiceClient(channel);
     }
 
