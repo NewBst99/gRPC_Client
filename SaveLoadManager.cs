@@ -3,42 +3,105 @@
 using System.Threading.Tasks;
 // using grpc_client;
 using UnityEngine;
-
+using Photon.Pun;
 public class SaveLoadManager : MonoBehaviour
 {
     private StubClient stubclient;
     private string host = "localhost";
     private int port = 9090;
 
-    // Start is called before the first frame update
+    private Player playerinfo;
+
+    // Called before the first frame
     void Start()
     {
         stubclient = new StubClient(host, port);
     }
 
-    // For Save Button
     public async void OnSaveButtonClick()
     {
-        await Task.Run(() =>
+        Player playerinfo = Player.LocalPlayerInstance;
+        if (playerinfo != null && playerinfo.GetComponent<PhotonView>().IsMine)
         {
-            stubclient.saveUserInfo(1, "testuser1", 10, "2024-10-28 21:08:26");
-            stubclient.saveItemRelation(1, "c100", 1);
-            stubclient.saveItemRelation(1, "c101", 3);
-            stubclient.saveMapProgress(1, 0, -40, -8, 0);
+            // Userinfo
+            int userid = playerinfo.userId;
+            string nkname = playerinfo.NickNameText.text;        // NickNameText? NickName?
+            float curexp = playerinfo.Exp;
+            float maxexp = playerinfo.MaxExp;
+            float userlevel = playerinfo.Level;
+            float curhp = playerinfo.Hp;
+            float maxhp = playerinfo.MaxMp;
+            float curmp = playerinfo.Mp;
+            float maxmp = playerinfo.MaxMp;
+            float attpower = playerinfo.Damage;
+            float statpoint = playerinfo.LevelupStatPoint;
+            float skillpoint = playerinfo.LevelupSkillPoint;
 
-            Debug.Log("User info, item relations, and map progress saved successfully.");
-        });
+            // User Location
+            float xloc = playerinfo.xloc;
+            float yloc = playerinfo.yloc;
+            float zloc = playerinfo.zloc;
+
+            // // Skill Relation
+            // int skillid = skillinfo.skillId;
+            // int skilllevel = skillinfo.level;
+
+            // // // Item Relation
+            // string itemid = iteminfo.itemID;
+            // int quantity = itemcount.ItemCount;
+
+            await stubclient.saveUserInfo(userid, nkname, curexp, maxexp, userlevel, curhp, maxhp, curmp, maxmp, attpower, statpoint, skillpoint);
+            await stubclient.saveUserLocation(userid, xloc, yloc, zloc);
+            // await stubclient.saveSkillRelation(userid, skillid, skilllevel);
+            // await stubclient.saveItemRelation(userid, itemid, quantity);
+
+            Debug.Log("User info saved successfully.");
+        }
     }
 
     // For Load Button
     public async void OnLoadButtonClick()
     {
-        await Task.Run(() =>
+        Player playerinfo = Player.LocalPlayerInstance;
+
+        if (playerinfo != null && playerinfo.GetComponent<PhotonView>().IsMine)
         {
-            stubclient.getUserInfo(1);
-            Debug.Log("User info, item relations, and map progress loaded successfully.");
-        });
-        
+            var loadedInfo = await stubclient.getUserInfo(playerinfo.userId);
+            playerinfo.maxHp = loadedInfo.Maxhp;
+            playerinfo.maxExp = loadedInfo.Maxexp;
+            playerinfo.maxMp = loadedInfo.Maxmp;
+
+            StatUI.Instance.UpdateHP(loadedInfo.Maxhp);
+            StatUI.Instance.UpdateHP(loadedInfo.Maxhp);
+            StatUI.Instance.UpdateHP(loadedInfo.Maxhp);
+
+            await Task.Delay(100);
+
+            playerinfo.Hp = loadedInfo.Curhp;
+            playerinfo.Exp = loadedInfo.Curexp;
+            playerinfo.Mp = loadedInfo.Curmp;
+
+            playerinfo.HpBarController(loadedInfo.Curhp);
+            playerinfo.MpBarController(loadedInfo.Curmp);
+
+
+            playerinfo.Level = loadedInfo.Userlevel;
+            playerinfo.Damage = loadedInfo.Attpower;
+            playerinfo.LevelupStatPoint = loadedInfo.Statpoint;
+            playerinfo.LevelupSkillPoint = loadedInfo.Skillpoint;
+
+            var loadedLocation = await stubclient.getUserLocation(playerinfo.userId);
+            playerinfo.xloc = loadedLocation.Xloc;
+            playerinfo.yloc = loadedLocation.Yloc;
+            playerinfo.zloc = loadedLocation.Zloc;
+            playerinfo.transform.position = new Vector3(playerinfo.xloc, playerinfo.yloc, playerinfo.zloc);
+
+            Debug.Log("User info loaded successfully.");
+        }
+        else
+        {
+            Debug.Log("Local player not found or not owned by PhotonView.");
+        }
     }
 
     private async void OnDestroy()
