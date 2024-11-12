@@ -4,7 +4,7 @@ using Photon.Pun;
 public class SaveLoadManager : MonoBehaviour
 {
     private StubClient stubclient;
-    private string host = "public IPv4";
+    private string host = "61.96.171.177";
     private int port = 9090;
 
     private Player playerinfo;
@@ -103,6 +103,38 @@ public class SaveLoadManager : MonoBehaviour
         else
         {
             Debug.Log("Local player not found or not owned by PhotonView.");
+        }
+    }
+
+    public async void OnRespawnFunc()
+    {
+        Player playerinfo = Player.LocalPlayerInstance;
+
+        if (playerinfo != null && playerinfo.GetComponent<PhotonView>().IsMine)
+        {
+            // Userinfo
+            int userid = playerinfo.userId;
+            string nkname = playerinfo.NickNameText.text;
+            float curexp = playerinfo.Exp;
+            float maxexp = playerinfo.MaxExp;
+            float userlevel = playerinfo.Level;
+            float curhp = playerinfo.Hp;
+            float maxhp = playerinfo.MaxHp;
+            float curmp = playerinfo.Mp;
+            float maxmp = playerinfo.MaxMp;
+            float attpower = playerinfo.Damage;
+            float statpoint = playerinfo.LevelupStatPoint;
+            float skillpoint = playerinfo.LevelupSkillPoint;
+
+            // Respawn
+            float xloc = -39.60f;
+            float yloc = -8.00f;
+            float zloc = 0f;
+
+            await stubclient.saveUserInfo(userid, nkname, curexp, maxexp, userlevel, curhp, maxhp, curmp, maxmp, attpower, statpoint, skillpoint);
+            await stubclient.saveUserLocation(playerinfo.userId, xloc, yloc, zloc);
+
+            Debug.Log("User Respawn successfully.");
         }
     }
 
