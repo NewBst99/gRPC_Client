@@ -1,16 +1,16 @@
-// using System.Collections;
-// using System.Collections.Generic;
 using System.Threading.Tasks;
-// using grpc_client;
 using UnityEngine;
 using Photon.Pun;
 public class SaveLoadManager : MonoBehaviour
 {
     private StubClient stubclient;
-    private string host = "localhost";
+    private string host = "public IPv4";
     private int port = 9090;
 
     private Player playerinfo;
+    // private Skill skillinfo;
+    // private Item iteminfo;
+    // private InventorySlot itemcount;
 
     // Called before the first frame
     void Start()
@@ -25,12 +25,12 @@ public class SaveLoadManager : MonoBehaviour
         {
             // Userinfo
             int userid = playerinfo.userId;
-            string nkname = playerinfo.NickNameText.text;        // NickNameText? NickName?
+            string nkname = playerinfo.NickNameText.text;   
             float curexp = playerinfo.Exp;
             float maxexp = playerinfo.MaxExp;
             float userlevel = playerinfo.Level;
             float curhp = playerinfo.Hp;
-            float maxhp = playerinfo.MaxMp;
+            float maxhp = playerinfo.MaxHp;
             float curmp = playerinfo.Mp;
             float maxmp = playerinfo.MaxMp;
             float attpower = playerinfo.Damage;
@@ -50,6 +50,7 @@ public class SaveLoadManager : MonoBehaviour
             // string itemid = iteminfo.itemID;
             // int quantity = itemcount.ItemCount;
 
+            // 서버에 데이터 전송
             await stubclient.saveUserInfo(userid, nkname, curexp, maxexp, userlevel, curhp, maxhp, curmp, maxmp, attpower, statpoint, skillpoint);
             await stubclient.saveUserLocation(userid, xloc, yloc, zloc);
             // await stubclient.saveSkillRelation(userid, skillid, skilllevel);
@@ -70,10 +71,9 @@ public class SaveLoadManager : MonoBehaviour
             playerinfo.maxHp = loadedInfo.Maxhp;
             playerinfo.maxExp = loadedInfo.Maxexp;
             playerinfo.maxMp = loadedInfo.Maxmp;
-
+            
             StatUI.Instance.UpdateHP(loadedInfo.Maxhp);
-            StatUI.Instance.UpdateHP(loadedInfo.Maxhp);
-            StatUI.Instance.UpdateHP(loadedInfo.Maxhp);
+            StatUI.Instance.UpdateMP(loadedInfo.Maxmp);
 
             await Task.Delay(100);
 
@@ -84,8 +84,10 @@ public class SaveLoadManager : MonoBehaviour
             playerinfo.HpBarController(loadedInfo.Curhp);
             playerinfo.MpBarController(loadedInfo.Curmp);
 
-
             playerinfo.Level = loadedInfo.Userlevel;
+            playerinfo.LevelController(loadedInfo.Userlevel);
+
+
             playerinfo.Damage = loadedInfo.Attpower;
             playerinfo.LevelupStatPoint = loadedInfo.Statpoint;
             playerinfo.LevelupSkillPoint = loadedInfo.Skillpoint;
