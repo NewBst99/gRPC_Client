@@ -4,8 +4,8 @@ using Photon.Pun;
 public class SaveLoadManager : MonoBehaviour
 {
     private StubClient stubclient;
-    private string host = "61.96.171.177";
-    private int port = 9090;
+    private string host = "Public IPv4";
+    private int port = Port num;
 
     private Player playerinfo;
     // private Skill skillinfo;
