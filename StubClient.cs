@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 
 using Grpc.Core;
-using myungbae;
+using myungbae;  // gRPC 생성된 파일들 포함
 
 public class StubClient
 {
@@ -11,6 +11,7 @@ public class StubClient
 
     public StubClient(string host, int port)
     {
+        // HTTP/2 보안을 비활성화 (개발 환경에서만 사용 권장)
         channel = new Channel(host, port, ChannelCredentials.Insecure);
         client = new GameService.GameServiceClient(channel);
     }
@@ -42,7 +43,7 @@ public class StubClient
             Skillpoint = skillpoint,
         };
 
-        var response = await client.saveUserInfoAsync(request);
+        await client.saveUserInfoAsync(request);
     }
 
     public async Task<UserLocationResponse> getUserLocation(int userid)
@@ -63,7 +64,7 @@ public class StubClient
             Zloc = zloc
         };
 
-        var response = await client.saveUserLocationAsync(request);
+        await client.saveUserLocationAsync(request);
     }
 
     public async Task<SkillRelationResponse> getSkillRelation(int userid)
@@ -83,7 +84,7 @@ public class StubClient
             Skilllevel = skilllevel
         };
 
-        var response = await client.saveSkillRelationAsync(request);
+        await client.saveSkillRelationAsync(request);
     }
 
     public async Task<ItemRelationResponse> getItemRelation(int userid)
@@ -103,7 +104,7 @@ public class StubClient
             Quantity = quantity
         };
 
-        var response = await client.saveItemRelationAsync(request);
+        await client.saveItemRelationAsync(request);
     }
 
     public async Task ShutdownAsync()
